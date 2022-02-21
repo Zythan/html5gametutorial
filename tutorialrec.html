@@ -40,54 +40,96 @@
 
     var player;
     createPlayer = function() {
-        player = {
-            id: 'P1',
-            type: 'player',
-            x: 50,
-            y: 50,
-            width: 20,
-            height: 20,
-            centerX: 20 / 2,
-            centerY: 20 / 2,
-            spdX: 0,
-            spdY: 0,
-            color: "blue",
-            hp: 10,
-            atkSpd: 1,
-            atkCntFireBullet: 0,
-            aimAngle: 0,
-            shotColor: '#FFFFFF',
-            pressingUp: false,
-            pressingDown: false,
-            pressingLeft: false,
-            pressingRight: false,
-        };
+       let self = {
+            id      : 'P1',
+            type    : 'player',
+            x       : 50,
+            y       : 50,
+            width   : 20,
+            height  : 20,
+            centerX : 20 / 2,
+            centerY : 20 / 2,
+            spdX    : 0,
+            spdY    : 0,
+            color   : "blue",
+        }
+        self.hp            = 10;
+        self.atkSpd        = 1;
+        self.attackCounter = 0;
+        self.aimAngle      = 0;
+        self.shotColor     = '#FFFFFF';
+        //
+        self.pressingUp    = false;
+        self.pressingDown  = false;
+        self.pressingLeft  = false;
+        self.pressingRight = false;
+        player = self;
     }
 
     //Enemy
     var enemyList = {};
     Enemy = function(id,name,x=10,y=10,width=30,height=30,color="red",spdX=1,spdY=1,hp=10) {
         enemyCount++
-        var enemy = {
-            id            : id,
-            type          : 'enemy',
-            spdX          : spdX,
-            x             : x,
-            y             : y,
-            spdY          : spdY,
-            name          : name,
-            width         : width,
-            height        : height,
-            centerX       : width/2,
-            centerY       : height/2,
-            color         : color,
-            hp            : hp,
-            aimAngle      : 0,
-            atkSpd        : 1,
-            attackCounter : 0,
-            shotColor     : '#FF0000',
-        };
-        enemyList[id] = enemy;
+        var self = {
+            id      : id,
+            name    : name,
+            type    : 'enemy',
+            x       : x,
+            y       : y,
+            width   : width,
+            height  : height,
+            centerX : width / 2,
+            centerY : height / 2,
+            spdX    : spdX,
+            spdY    : spdY,
+            color   : color,
+        }
+        self.hp            = hp
+        self.atkSpd        = 1;
+        self.attackCounter = 0;
+        self.aimAngle      = 0;
+        self.shotColor     = '#FF0000';
+        enemyList[self.id] = self;
+    }
+
+    Upgrade = function(id,name,x=10,y=10,width=10,height=10,color='#FFA500',spdX=0,spdY=0,hp=10,category='low') {
+        var self = {
+            id       : id,
+            name     : name,
+            type     : 'upgrade',
+            x        : x,
+            y        : y,
+            width    : width,
+            height   : height,
+            centerX  : width / 2,
+            centerY  : height / 2,
+            spdX     : spdX,
+            spdY     : spdY,
+            color    : color,
+        }
+        self.hp    = hp;
+        self.category = category;
+        upgradeList[self.id] = self;
+    }
+
+    Bullet = function(id,name,x=10,y=10,width=10,height=10,color='#FFFFFF',spdX=0,spdY=0,hp=10,time=10) {
+        var self = {
+            id      : id,
+            name    : name,
+            type    : 'bullet',
+            x       : x,
+            y       : y,
+            width   : width,
+            height  : height,
+            centerX : width/2,
+            centerY : height/2,
+            spdX    : spdX,
+            spdY    : spdY,
+            color   : color,
+        }
+        self.hp   = hp;
+        self.time = time;
+        bulletList[self.id] = self;
     }
 
     //General...ish
@@ -311,26 +353,6 @@
         }
     }
 
-    Upgrade = function(id,name,x=10,y=10,width=10,height=10,color='#FFA500',spdX=0,spdY=0,hp=10,category='low') {
-        var upgrade = {
-            id      : id,
-            type    : upgrade,
-            spdX    : spdX,
-            x       : x,
-            y       : y,
-            spdY    : spdY,
-            name    : name,
-            width   : width,
-            height  : height,
-            centerX : width/2,
-            centerY : height/2,
-            color   : color,
-            hp      : hp,
-            category: category,
-        };
-        upgradeList[id] = upgrade;
-    }
-
     randomlyGenerateUpgrade = function() {
         var id       = Math.random();
         var x        = randomIntInRange(1,WIDTH );
@@ -349,26 +371,6 @@
         if (frameCount % 75 === 0 ) {
             randomlyGenerateUpgrade();
         }
-    }
-
-    Bullet = function(id,name,x=10,y=10,width=10,height=10,color='#FFFFFF',spdX=0,spdY=0,hp=10,time=10) {
-        var bullet = {
-            id      : id,
-            type    : 'bullet',
-            spdX    : spdX,
-            x       : x,
-            y       : y,
-            spdY    : spdY,
-            name    : name,
-            width   : width,
-            height  : height,
-            centerX : width/2,
-            centerY : height/2,
-            color   : color, //orange..i hope
-            hp      : hp,
-            time    : time,
-        };
-        bulletList[id] = bullet;
     }
 
     randomlyGenerateBullet = function(actor) {
@@ -405,28 +407,28 @@
 
     //New Attack Routines
     performAttack = function(actor) {
-        if (actor.atkCntFireBullet > 25) {
+        if (actor.attackCounter > 25) {
             generateBullet(actor);
-            actor.atkCntFireBullet = 0;
+            actor.attackCounter = 0;
         }
     }
 
     performSpecialAttack = function(actor) {
-        if (actor.atkCntFireBullet > 50) {
+        if (actor.attackCounter > 50) {
             generateBullet(actor,actor.aimAngle - 5);
             generateBullet(actor,actor.aimAngle    );
             generateBullet(actor,actor.aimAngle + 5);
-            actor.atkCntFireBullet = 0;
+            actor.attackCounter = 0;
         }
     }
 
     performUltraAttack = function(actor) {
-        if (actor.atkCntFireBullet > 50) {
+        if (actor.attackCounter > 50) {
             for (let i=0;i<360;i++) {
                 let bulletColor = getRandomColor();
                 generateBullet(actor,i,bulletColor);
             }
-            actor.atkCntFireBullet = 0;
+            actor.attackCounter = 0;
         }
     }
 
@@ -435,7 +437,7 @@
     update = function() {
         frameCount++;
         score++;
-        player.atkCntFireBullet += player.atkSpd;
+        player.attackCounter += player.atkSpd;
 
         //ready board
         ctx.clearRect(0,0,WIDTH,HEIGHT);
@@ -526,7 +528,7 @@
         player.hp               = 10;
         player.atkSpd           = 1;
         player.aimAngle         = 0;
-        player.atkCntFireBullet = 0;
+        player.attackCounter = 0;
 
         enemyCount = 0;
         frameCount = 0;
