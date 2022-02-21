@@ -388,35 +388,6 @@
         Bullet(id,'Bullet',x,y,width,height,color,spdX,spdY,hp,time)
     }
 
-    //Old Attack routines
-    //replaced by more generic performAttack(actor)
-    // checkForPlayerBulletCreate = function() {
-    //     if (player.atkCntFireBullet > 25) {
-    //         generateBullet(player);
-    //         player.atkCntFireBullet = 0;
-    //     }
-    // }
-
-    //replaced with performSpecialAttack();
-    // checkForPlayerSecondAttackCreate = function() {
-    //     if (player.atkCntFireBullet > 50) {
-    //         generateBullet(player,player.aimAngle - 5);
-    //         generateBullet(player,player.aimAngle    );
-    //         generateBullet(player,player.aimAngle + 5);
-    //         player.atkCntFireBullet = 0;
-    //     }
-    // }
-
-    //Replaced with perform ultra attack
-    checkForPlayerSpecialCreate = function() {
-        if (player.atkCntFireBullet > 50) {
-            for (let i=0;i<360;i++) {
-              let bulletColor = getRandomColor();
-              generateBullet(player,i,bulletColor);
-            }
-            player.atkCntFireBullet = 0;
-        }
-    }
 
     //New Attack Routines
     performAttack = function(actor) {
