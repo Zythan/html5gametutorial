@@ -176,15 +176,28 @@
         return Math.sqrt(vx*vx+vy*vy);
     }
 
-    updateEntityPosition = function(entity) {
-        entity.x += entity.spdX;
-        entity.y += entity.spdY;
-    }
 
     updateEntity = function(entity) {
         updateEntityPosition(entity);
         draw(entity);
         checkBounds(entity);
+    }
+
+    updatePlayer = function() {
+        updateEntityPosition(player);
+        checkBoundsKeyBoardMove(player);
+        draw(player);
+    }
+
+    updateEntityPosition = function(entity) {
+        if (entity.type === 'player') {
+            updatePlayerPosition();
+            return;
+        }
+        else {
+            entity.x += entity.spdX;
+            entity.y += entity.spdY;
+        }
     }
 
     updatePlayerPosition = function() {
@@ -266,15 +279,6 @@
         for (let key in obj ) return false;
         return true;
     }
-
-    updatePlayer = function() {
-        updatePlayerPosition();
-        checkBoundsKeyBoardMove(player);
-        draw(player);
-    }
-
-
-
 
     randomlyGenerateEnemy = function() {
         var id       = Math.random();
@@ -387,7 +391,6 @@
 
         Bullet(id,'Bullet',x,y,width,height,color,spdX,spdY,hp,time)
     }
-
 
     //New Attack Routines
     performAttack = function(actor) {
