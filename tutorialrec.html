@@ -381,6 +381,7 @@
         Bullet(id,'Bullet',x,y,width,height,color,spdX,spdY,hp,time)
     }
 
+    //Old Attack routines
     //replaced by more generic performAttack(actor)
     // checkForPlayerBulletCreate = function() {
     //     if (player.atkCntFireBullet > 25) {
@@ -408,6 +409,7 @@
         }
     }
 
+    //New Attack Routines
     performAttack = function(actor) {
         if (actor.atkCntFireBullet > 25) {
             generateBullet(actor);
