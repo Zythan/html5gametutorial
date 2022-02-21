@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <HTML>
 <body bgcolor="black" text="FFFFFF">
 <div style = "text-align:center;">
@@ -36,28 +37,32 @@
 
     //Player
     var collisionDistancePlayer = 25; //for point reference
-    var player = {
-        id               : 'P1',
-        type             : 'player',
-        x                : 50,
-        spdX             : 30,
-        y                : 50,
-        spdY             : 5,
-        width            : 20,
-        height           : 20,
-        centerX          : 20/2,
-        centerY          : 20/2,
-        color            : "blue",
-        hp               : 10,
-        atkSpd           : 1,
-        atkCntFireBullet : 0,
-        pressingUp       : false,
-        pressingDown     : false,
-        pressingLeft     : false,
-        pressingRight    : false,
-        aimAngle         : 0,
-        shotColor        : '#FFFFFF',
-    };
+
+    var player;
+    createPlayer = function() {
+        player = {
+            id: 'P1',
+            type: 'player',
+            x: 50,
+            y: 50,
+            width: 20,
+            height: 20,
+            centerX: 20 / 2,
+            centerY: 20 / 2,
+            spdX: 0,
+            spdY: 0,
+            color: "blue",
+            hp: 10,
+            atkSpd: 1,
+            atkCntFireBullet: 0,
+            aimAngle: 0,
+            shotColor: '#FFFFFF',
+            pressingUp: false,
+            pressingDown: false,
+            pressingLeft: false,
+            pressingRight: false,
+        };
+    }
 
     //Enemy
     var enemyList = {};
@@ -164,10 +169,10 @@
         }
     }
     checkBoundsKeyBoardMove = function(entity) {
-        if (player.x < player.centerX         ) player.x = player.centerX;
-        if (player.x > WIDTH - player.centerX ) player.x = WIDTH - player.centerX;
-        if (player.y < player.centerY         ) player.y = player.centerY;
-        if (player.y > HEIGHT - player.centerY) player.y = HEIGHT -player.centerY;
+        if (entity.x < entity.centerX         ) entity.x = entity.centerX;
+        if (entity.x > WIDTH - entity.centerX ) entity.x = WIDTH - entity.centerX;
+        if (entity.y < entity.centerY         ) entity.y = player.centerY;
+        if (entity.y > HEIGHT - entity.centerY) entity.y = HEIGHT -entity.centerY;
     }
 
     getDistanceBetweenEntity = function(entity1,entity2) {
@@ -179,8 +184,13 @@
 
     updateEntity = function(entity) {
         updateEntityPosition(entity);
+        if (entity.type === 'player') {
+            checkBoundsKeyBoardMove(entity);
+        }
+        else {
+            checkBounds(entity);
+        }
         draw(entity);
-        checkBounds(entity);
     }
 
     updatePlayer = function() {
@@ -191,20 +201,21 @@
 
     updateEntityPosition = function(entity) {
         if (entity.type === 'player') {
-            updatePlayerPosition();
+            updatePositionKeyPress(entity);
             return;
         }
         else {
+            //update on entity speed
             entity.x += entity.spdX;
             entity.y += entity.spdY;
         }
     }
 
-    updatePlayerPosition = function() {
-        if (player.pressingUp   ) player.y -= 10;
-        if (player.pressingDown ) player.y += 10;
-        if (player.pressingLeft ) player.x -= 10;
-        if (player.pressingRight) player.x += 10;
+    updatePositionKeyPress = function(entity) {
+        if (entity.pressingUp   ) entity.y -= 10;
+        if (entity.pressingDown ) entity.y += 10;
+        if (entity.pressingLeft ) entity.x -= 10;
+        if (entity.pressingRight) entity.x += 10;
     }
 
     //Mouse/Keyboard functions
@@ -447,11 +458,7 @@
             if (--bulletList[curBulletId].time <= 0) delete bulletList[curBulletId];
         }
 
-`        //console.log("Player:::");
-`        //updateEntity(player); //removed speed adjust and hooked to mouse to position player and just draw player now
-        updatePlayer();
-
-
+        updateEntity(player);
 
         //Collision detect section
         for (var key in upgradeList) {
@@ -515,7 +522,12 @@
         var time = Date.now() - timeWhenGameStarted;
         if (score > highScore) highScore = score; //todo new high score routine Yippie weee...ect
         timeWhenGameStarted = Date.now();
-        player.hp = 10;
+
+        player.hp               = 10;
+        player.atkSpd           = 1;
+        player.aimAngle         = 0;
+        player.atkCntFireBullet = 0;
+
         enemyCount = 0;
         frameCount = 0;
         score      = 0;
@@ -525,19 +537,13 @@
         for (let i = 0; i<3; i++) randomlyGenerateEnemy();
     }
 
+    //RUN Section::::
     //Oh look we finally get to start running code .....2 lines :)
+    createPlayer();
     startNewGame();
     //Main loop
     setInterval(update,40); //40 milliseconds is 25 FPS -- cool...
 
-
-
-    //Examples
-    //if (frameCount % Math.round(25 / player.atkSpd) === 0 ) { //increase shot speed by attack speed every second
-    //setInterval( function() {update(player)},player.timeout);
-    // function clear() {
-    //   ctx.clearRect(x-spdX,y-spdY-30,100,100);
-    // }
 </script>
 </div>
 </body>
