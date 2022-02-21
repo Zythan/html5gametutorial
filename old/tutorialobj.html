@@ -1,0 +1,158 @@
+<HTML>
+<body bgcolor="black" text="FFFFFF">
+<div style = "text-align:center;">
+<h1>Hi There!</h1>
+<canvas id="ctx" width="500" height="500" style="border:1px solid #990000;"></canvas>
+<script>
+    // console.log("WTH v0.0000001")
+    var canvasPositionX = 100;
+    var canvasPositionY = 50;
+    var doc = document.getElementById("ctx");
+    doc.width      = 500;
+    doc.height     = 500;
+    doc.style.left = "100px";
+    doc.style.top  = "50px";
+    doc.style.position = "absolute";
+
+
+
+    var ctx    = document.getElementById("ctx").getContext("2d");
+    ctx.font       = '30px Arial';
+    ctx.fillStyle  = "red";
+
+    var TOP     = 0;
+    var LEFT    = 0;
+    var WIDTH   = 500;
+    var HEIGHT  = 500;
+    var collisionDistancePlayer = 25;
+
+    var timeWhenGameStarted = Date.now();
+
+
+
+    //Functions...doh
+   addEnemy = function(id,x,spdX,y,spdY,name,hp) {
+        var enemy = {
+            id      : id,
+            x       : x - canvasPositionX,  //adjust for moving canvas...go figure its in doc cords not canvas
+            spdX    : spdX,
+            y       : y - canvasPositionY, //adjust for moving canvas...go figure its in doc cords not canvas
+            spdY    : spdY,
+            name    : name,
+            hp      : hp,
+        };
+        enemyList[id] = enemy;
+    }
+
+    update = function() {
+       ctx.clearRect(0,0,WIDTH,HEIGHT);
+       drawEntityStats(player)
+
+       for(var key in enemyList){
+           updateEntity(enemyList[key]);
+           var isColliding = testCollisionEntity(player,enemyList[key]);
+           if (isColliding) {
+               console.log("OUCH collision -1 hp" + enemyList[key].name);
+               ctx.fillText("OUCH! -1 HP",player.x,player.y);
+               player.hp -= 1;
+               if (player.hp <= 0) {
+                   ctx.fillText("Player is DEAD!!!",player.x,player.y);
+                   console.log("You Lose!")
+                   ctx.fillText("Player is Revived!!!",player.x,player.y);
+                   console.log("Player Revived!")
+                   timeWhenGameStarted = Date.now();
+                   player.hp = 10;
+               }
+           }
+       }
+       //updateEntity(player); //removed speed adjust and hooked to mouse to position player and just draw player now
+       draw(player)
+
+    }
+    drawEntityStats = function(entity) {
+       ctx.save();
+       ctx.fillStyle  = "white";
+       ctx.font       = '15px Arial';
+       var time = Date.now() - timeWhenGameStarted;
+       ctx.fillText("HP:" + entity.hp + "  Time:" + time,0,20);
+       ctx.restore();
+    }
+
+    testCollisionEntity = function(entity1,entity2) {
+        var distance = getDistanceBetweenEntity(entity1,entity2);
+        return distance < collisionDistancePlayer;
+    }
+
+    getDistanceBetweenEntity = function(entity1,entity2) {
+        var vx = entity1.x - entity2.x;
+        var vy = entity1.y - entity2.y;
+        return Math.sqrt(vx*vx+vy*vy);
+    }
+
+    updateEntity = function(entity) {
+        updateEntityPosition(entity);
+        draw(entity);
+        checkBounds(entity);
+    }
+
+    updateEntityPosition = function(entity) {
+        entity.x += entity.spdX;
+        entity.y += entity.spdY;
+    }
+
+    draw = function(entity) {
+        ctx.fillText(entity.name,entity.x,entity.y);
+    }
+
+    checkBounds = function(entity) {
+        if(entity.x <= LEFT || entity.x >= WIDTH){
+            console.log('Bounce Left/Right');
+            entity.spdX = -entity.spdX;
+        }
+        if(entity.y <= LEFT || entity.y >= HEIGHT){
+            console.log('Bounce Up/Down');
+            entity.spdY = -entity.spdY;
+        }
+    }
+
+    document.onmousemove = function(mouse) {
+       var mouseX = mouse.clientX;
+       var mouseY = mouse.clientY;
+
+       var cursorAdjustX = 25;
+       var cursorAdjustY = 10;
+       player.x = mouseX - canvasPositionX - cursorAdjustX;
+       player.y = mouseY - canvasPositionY + cursorAdjustY;
+    }
+
+    //Player
+    var player = {
+       id      : 'P1',
+       name    : '>D-',
+       x       : 50,
+       spdX    : 30,
+       y       : 50,
+       spdY    : 5,
+       hp      : 10,
+    };
+
+    //Enemy
+    var enemyList = {};
+    addEnemy('E1',330,2,100,3,'E1',10);
+    addEnemy('E2',230,2,100,1,'E2',10);
+    addEnemy('E3',150,2,250,5,'E3',10);
+
+    //Main loop
+    setInterval(update,40);
+
+
+
+    //Examples
+    //setInterval( function() {update(player)},player.timeout);
+    // function clear() {
+    //     ctx.clearRect(x-spdX,y-spdY-30,100,100);
+    // }
+</script>
+</div>
+</body>
+</HTML>

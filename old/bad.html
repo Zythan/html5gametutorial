@@ -1,0 +1,67 @@
+<canvas id="ctx" width="500" height="500" style="border:1px solid #000000;"></canvas>
+<script>
+    // console.log("WTH v0.0000001")
+    var ctx = document.getElementById("ctx").getContext("2d");
+    ctx.font = '30px Arial';
+
+    var TOP     = 0;
+    var LEFT    = 0;
+    var WIDTH   = 500;
+    var HEIGHT  = 500;
+   
+    
+
+    //Player
+    var player = {
+        name    : 'P',
+        x       : 50,
+        spdX    : 30,
+        y       : 50,
+        spdY    : 5,
+        timeout : 40,
+    };
+
+    //Enemy
+    var enemy = {
+        name    : 'Z',
+        x       : 450,
+        spdX    : -30,
+        y       : 450,
+        spdY    : -5,
+        timeout : 50,         
+    };
+    
+       
+     update(player) ;
+     setInterval(update,player.timeout);     
+     update(enemy ) ;
+     setInterval(update,enemy.timeout);
+
+    function update(plenobj) {       
+        plenobj.x += plenobj.spdX;    
+        plenobj.y += plenobj.spdY;
+        ctx.fillText(plenobj.name,plenobj.x,plenobj.y);
+        checkBounds(plenobj);        
+    }
+
+    function checkBounds(plenobj) {   
+        if(plenobj.x <= LEFT || plenobj.x >= WIDTH){
+            console.log('Bounce Left/Right - Player');
+            plenobj.spdX = -plenobj.spdX;
+        } 
+        if(plenobj.y <= LEFT || plenobj.y >= HEIGHT){
+            console.log('Bounce Up/Down - Player');
+            plenobj.spdY = -plenobj.spdY;
+        }
+    }
+
+   
+    // function clear() {        
+    //     ctx.clearRect(x-spdX,y-spdY-30,100,100);
+    // }
+
+   
+
+
+    
+</script>

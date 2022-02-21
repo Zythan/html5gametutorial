@@ -1,0 +1,81 @@
+<canvas id="ctx" width="500" height="500" style="border:1px solid #000000;"></canvas>
+<script>
+    // console.log("WTH v0.0000001")
+    var ctx = document.getElementById("ctx").getContext("2d");
+    ctx.font = '30px Arial';
+
+    var TOP     = 0;
+    var LEFT    = 0;
+    var WIDTH   = 500;
+    var HEIGHT  = 500;
+
+
+
+    //Player
+    var player_name    = 'P'
+    var player_x       = 50;
+    var player_spdX    = 30;
+    var player_y       = 50;
+    var player_spdY    = 5;
+    var player_timeout = 40;
+
+    //Enemy
+    var enemy_name = 'Z'
+    var enemy_x       = 450;
+    var enemy_spdX    = -30;
+    var enemy_y       = 450;
+    var enemy_spdY    = -5;
+    var enemy_timeout = 50;
+
+
+    updatePlayer();
+    setInterval(updatePlayer,player_timeout);
+    updateEnemy();
+    setInterval(updateEnemy,enemy_timeout);
+
+
+    function updatePlayer() {
+        player_x += player_spdX;
+        player_y += player_spdY;
+        ctx.fillText(player_name,player_x,player_y);
+        checkBoundsPlayer();
+    }
+
+    function checkBoundsPlayerNoControl() {
+        if(player_x <= LEFT || player_x >= WIDTH){
+            console.log('Bounce Left/Right - Player');
+            player_spdX = -player_spdX;
+        }
+        if(player_y <= LEFT || player_y >= HEIGHT){
+            console.log('Bounce Up/Down - Player');
+            player_spdY = -player_spdY;
+        }
+    }
+
+    function updateEnemy() {
+        enemy_x += enemy_spdX;
+        enemy_y += enemy_spdY;
+        ctx.fillText(enemy_name,enemy_x,enemy_y);
+        checkBoundsEnemy();
+    }
+
+    function checkBoundsEnemy() {
+        if(enemy_x <= LEFT || enemy_x >= WIDTH){
+            console.log('Bounce Left/Right - Enemy');
+            enemy_spdX = -enemy_spdX;
+        }
+        if(enemy_y <= LEFT || enemy_y >= HEIGHT){
+            console.log('Bounce Up/Down - Enemy');
+            enemy_spdY = -enemy_spdY;
+        }
+    }
+
+    // function clear() {
+    //     ctx.clearRect(x-spdX,y-spdY-30,100,100);
+    // }
+
+
+
+
+
+</script>

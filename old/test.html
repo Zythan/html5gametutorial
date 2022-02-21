@@ -1,0 +1,30 @@
+<canvas id="ctx" width="500" height="500" style="border:1px solid #000000;"></canvas>
+<script>
+    // console.log("WTH v0.0000001")
+    var ctx = document.getElementById("ctx").getContext("2d");
+    ctx.font = '30px Arial';
+
+    var TOP     = 0;
+    var LEFT    = 0;
+    var WIDTH   = 500;
+    var HEIGHT  = 500;
+
+    var player = {
+        name    : 'P',
+        x       : 50,
+        spdX    : 30,
+        y       : 50,
+        spdY    : 5,
+        timeout : 40,
+    };
+
+    setInterval(
+        function() {
+            show(player)
+        }  ,player.timeout);
+
+
+    function show(entity) {
+        console.log(entity);
+    }
+</script>
